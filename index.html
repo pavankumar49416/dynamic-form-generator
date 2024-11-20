@@ -1,0 +1,59 @@
+import React, { useState } from 'react';
+
+// Define types for form data
+interface FormData {
+  userChoice: string;
+  extraInput?: string;
+}
+
+const DynamicForm: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({ userChoice: 'default' });
+
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="userChoice">Choose an option:</label>
+        <select
+          id="userChoice"
+          name="userChoice"
+          value={formData.userChoice}
+          onChange={handleChange}
+        >
+          <option value="default">Select...</option>
+          <option value="showFields">Show extra fields</option>
+          <option value="hideFields">Hide extra fields</option>
+        </select>
+      </div>
+
+      {/* Conditionally render extra input */}
+      {formData.userChoice === 'showFields' && (
+        <div>
+          <label htmlFor="extraInput">Additional Info:</label>
+          <input
+            type="text"
+            id="extraInput"
+            name="extraInput"
+            value={formData.extraInput || ''}
+            onChange={handleChange}
+          />
+        </div>
+      )}
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default DynamicForm;
